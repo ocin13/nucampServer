@@ -7,6 +7,12 @@
 var app = require('../app');
 var debug = require('debug')('nucampserver:server');
 var http = require('http');
+/**
+ *  updated from exrcise*/
+const https = require('https');
+const fs = require('fs'); 
+
+app.set('secPort', 3443);
 
 /**
  * Get port from environment and store in Express.
@@ -18,11 +24,35 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
+/**
+ * updated from exrcise
+ */
+const options = {
+  key: fs.readFileSync(__dirname+'/server.key'),
+  cert: fs.readFileSync(__dirname+'/server.cert')
+};
+
+
+const secureServer = https.createServer(options, app);
+/**
+ * end update
+ */
 
 var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
+ */
+/**
+ * updated from exrcise
+ */
+secureServer.listen(app.get('secPort'), () => {
+  console.log('Server listening on port', app.get('secPort'));
+});
+secureServer.on('error', onError);
+secureServer.on('listening', onListening);
+/**
+ * end update
  */
 
 server.listen(port);
